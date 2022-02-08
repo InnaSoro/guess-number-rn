@@ -8,15 +8,19 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+  Modal,
 } from "react-native";
 
 import Card from "../components/Card";
 import Input from "../components/Input";
+import NumberContainer from "../components/NumberContainer";
 import colors from "../constants/colors";
 
-type Props = {};
+type Props = {
+  onStartGame: (selectedNumber: number) => void;
+};
 
-const StartGameScreen: FC<Props> = (props) => {
+const StartGameScreen: FC<Props> = ({ onStartGame }) => {
   const [enteredValue, setEnteredValue] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState(Number);
@@ -43,13 +47,32 @@ const StartGameScreen: FC<Props> = (props) => {
     setConfirmed(true);
     setSelectedNumber(chosenNumber);
     setEnteredValue("");
+    Keyboard.dismiss();
   };
 
   let confirmedOutput;
 
   if (confirmed) {
     confirmedOutput = (
-      <Text style={styles.title}>Chosen Number: {selectedNumber}</Text>
+      <Modal transparent={true} animationType="fade">
+        <TouchableWithoutFeedback onPress={resetInputHandler}>
+          <View style={styles.modalContainer}>
+            <Card style={styles.summaryContainer}>
+              <Text style={{ ...styles.title, color: colors.blue }}>
+                You selected
+              </Text>
+              <NumberContainer>{selectedNumber}</NumberContainer>
+              <View style={{ ...styles.button, marginTop: 10 }}>
+                <Button
+                  title="Start Game"
+                  onPress={() => onStartGame(selectedNumber)}
+                  color={colors.blue}
+                />
+              </View>
+            </Card>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     );
   }
 
@@ -138,6 +161,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: "100%",
     width: "100%",
+  },
+  summaryContainer: {
+    margin: 20,
+    alignItems: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.3)",
   },
 });
 

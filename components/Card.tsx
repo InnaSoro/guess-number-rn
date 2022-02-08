@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, ViewStyle } from "react-native";
 import colors from "../constants/colors";
 
 type Props = {
-  style: ViewStyle;
+  style?: ViewStyle;
 };
 
 const Card: FC<Props> = (props) => {
