@@ -1,4 +1,4 @@
-import React, { FC, useState, useRef } from "react";
+import React, { FC, useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -27,14 +27,21 @@ const generateRandomBetween = (
   }
 };
 
-type Props = { userChoice: number };
+type Props = { userChoice: number; onGameOver: (numOfRounds: number) => void };
 
-const GameScreen: FC<Props> = ({ userChoice }) => {
+const GameScreen: FC<Props> = ({ userChoice, onGameOver }) => {
   const [currentGuess, setCurrentGuess] = useState(
     generateRandomBetween(1, 100, userChoice)
   );
+  const [rounds, setRounds] = useState(0);
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
+
+  useEffect(() => {
+    if (currentGuess === userChoice) {
+      onGameOver(rounds);
+    }
+  }, [currentGuess, userChoice, onGameOver]);
 
   const nextGuessHandler = (direction: string) => {
     if (
@@ -57,6 +64,7 @@ const GameScreen: FC<Props> = ({ userChoice }) => {
       currentGuess
     );
     setCurrentGuess(nextNumber);
+    setRounds((curRounds) => curRounds + 1);
   };
 
   return (
